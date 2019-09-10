@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DevExpress/systemjs-vue-browser.git"
+    "url": "git+https://github.com/DevExpress/dx-systemjs-vue-browser.git"
   },
   "keywords": [
     "vue",
@@ -14,12 +14,12 @@
   "author": "Developer Express Inc.",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/DevExpress/systemjs-vue-browser/issues"
+    "url": "https://github.com/DevExpress/dx-systemjs-vue-browser/issues"
   },
   "scripts": {
     "test": "jest"
   },
-  "homepage": "https://github.com/DevExpress/systemjs-vue-browser#readme",
+  "homepage": "https://github.com/DevExpress/dx-systemjs-vue-browser#readme",
   "devDependencies": {
     "jest": "^23.6.0"
   }
