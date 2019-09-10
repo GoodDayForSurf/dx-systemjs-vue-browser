@@ -3,7 +3,9 @@ require("./index.js");
 const template = `
 <template>
     <div class="my-class">
-        Content and { text }
+        <template>
+            Content and { text }
+        </template>
     </div>
 </template>
 <script>
@@ -33,7 +35,9 @@ it("process template", () => {
 export default {
   template:  \`
     <div class=\"my-class\">
-        Content and { text }
+        <template>
+            Content and { text }
+        </template>
     </div>
 \`,data() {
     return {
@@ -50,7 +54,9 @@ it("process template without styles", () => {
 export default {
   template:  \`
     <div class=\"my-class\">
-        Content and { text }
+        <template>
+            Content and { text }
+        </template>
     </div>
 \`,data() {
     return {
