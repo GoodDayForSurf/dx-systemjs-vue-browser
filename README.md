@@ -24,5 +24,3 @@ System.config({
 });
 
 ```
-
-Codesandbox [example](https://codesandbox.io/s/o61y8zx2y)
