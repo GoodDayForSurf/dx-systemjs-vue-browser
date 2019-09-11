@@ -18,7 +18,7 @@
     var firstTagSymbols = "<" + tag;
     var start = text.indexOf(firstTagSymbols);
     var contentStart = findTagEnd(text, start);
-    var contentEnd = text.indexOf("</" + tag + ">");
+    var contentEnd = text.lastIndexOf("</" + tag + ">");
 
     return {
       content: start !== -1 ? text.substring(contentStart, contentEnd) : null,
