@@ -9,6 +9,7 @@ const template = `
     </div>
 </template>
 <script>
+let someObj = { methods: {} };
 export default {
   data() {
     return {
@@ -32,6 +33,7 @@ beforeEach(() => {
 
 it("process template", () => {
     const result = `
+let someObj = { methods: {} };
 export default {
   template:  \`
     <div class=\"my-class\">
@@ -51,6 +53,7 @@ export default {
 
 it("process template without styles", () => {
     const result = `
+let someObj = { methods: {} };
 export default {
   template:  \`
     <div class=\"my-class\">
