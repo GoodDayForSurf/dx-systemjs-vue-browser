@@ -4,15 +4,23 @@
 
   window.translateSFC = function (source) {
     var script = extract(source, "script").content;
-    var match = script.match(/(name ?:|data ?[:(](.*){|methods ?:|props ?:|computed ?:|components ?:)/im);
+    var match = script.match(/(export default {\s*)(data ?[:(](.*){|methods ?:|props ?:|computed ?:|components ?:)/im);
+    var componentRegistration = script.substr(match.index, script.length);
+    var propertyName = match[2];
+    var propertyIndex = componentRegistration.indexOf(propertyName);
 
     var template = extract(source, "template").content;
-    var result = script.substr(0, match.index) + "template:  `" + template + "`," + script.substr(match.index);
+    var content = setTemplate(componentRegistration, propertyIndex, template);
+    var result = script.substr(0, match.index) + content;
 
     appendStyle(parseStyle(source));
 
     return result;
   };
+
+  function setTemplate(content, propertyIndex, template) {
+    return `${content.substr(0, propertyIndex)}template:  \`${template}\`,${content.substr(propertyIndex)}`;
+  }
 
   function extract(text, tag) {
     var firstTagSymbols = "<" + tag;
@@ -51,7 +59,7 @@
     var style = document.createElement(src ? "link" : "style");
 
     style.type = "text/css";
-    
+
     if(src) {
       style.setAttribute("href", src);
       style.setAttribute("rel", "stylesheet");
@@ -66,7 +74,7 @@
     var head = document.head || document.querySelector("head") || document.getElementsByTagName("head")[0];
 
     head.appendChild(style);
-    
+
   }
 
   function findSrc(attrs) {
