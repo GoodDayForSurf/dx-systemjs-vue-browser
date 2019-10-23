@@ -9,7 +9,7 @@ const template = `
     </div>
 </template>
 <script>
-let someObj = { methods: {} };
+let someObj = { name: {} };
 export default {
   data() {
     return {
@@ -33,7 +33,7 @@ beforeEach(() => {
 
 it("process template", () => {
     const result = `
-let someObj = { methods: {} };
+let someObj = { name: {} };
 export default {
   template:  \`
     <div class=\"my-class\">
@@ -53,7 +53,7 @@ export default {
 
 it("process template without styles", () => {
     const result = `
-let someObj = { methods: {} };
+let someObj = { name: {} };
 export default {
   template:  \`
     <div class=\"my-class\">
