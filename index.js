@@ -19,7 +19,7 @@
   };
 
   function setTemplate(content, propertyIndex, template) {
-    return `${content.substr(0, propertyIndex)}template:  \`${template}\`,${content.substr(propertyIndex)}`;
+    return content.substr(0, propertyIndex) + "template:  `" + template + "`," + content.substr(propertyIndex);
   }
 
   function extract(text, tag) {
