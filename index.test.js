@@ -19,7 +19,7 @@ export default {
 };
 </script>`;
 
-const templateWithAdditionProperties = `
+const templateWithAdditionalProperties = `
 <template>
     <div class="my-class">
     </div>
