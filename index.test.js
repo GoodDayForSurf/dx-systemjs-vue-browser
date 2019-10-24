@@ -19,6 +19,25 @@ export default {
 };
 </script>`;
 
+const templateWithAdditionProperties = `
+<template>
+    <div class="my-class">
+    </div>
+</template>
+<script>
+export default {
+  filter: {
+    custom: []
+  },
+  render: functiom() {},
+  data() {
+    return {
+      text: "my-text",
+    };
+  }
+};
+</script>`;
+
 const componentSource = `${template}
 <style>
 .my-class {
@@ -82,4 +101,25 @@ it("process with standalone styles", () => {
 
     translateSFC(componentWithStandaloneStyles)
     expect(document.head.children[0].outerHTML).toEqual('<link type="text/css" href="./styles.css" rel="stylesheet">');
+});
+
+
+it("process with addition properties", () => {
+  const result = `
+export default {
+  filter: {
+    custom: []
+  },
+  render: functiom() {},
+  template:  \`
+    <div class=\"my-class\">
+    </div>
+\`,data() {
+    return {
+      text: \"my-text\",
+    };
+  }
+};
+`;
+  expect(translateSFC(templateWithAdditionProperties)).toBe(result);
 });

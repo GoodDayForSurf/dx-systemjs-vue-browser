@@ -4,9 +4,9 @@
 
   window.translateSFC = function (source) {
     var script = extract(source, "script").content;
-    var match = script.match(/(export default {\s*)(name ?:|data ?[:(](.*){|methods ?:|props ?:|computed ?:|components ?:)/im);
+    var match = script.match(/(export default {(\s*.)*)(name ?:|data ?[:(](.*){|methods ?:|props ?:|computed ?:|components ?:)/im);
     var componentRegistration = script.substr(match.index, script.length);
-    var propertyName = match[2];
+    var propertyName = match[3];
     var propertyIndex = componentRegistration.indexOf(propertyName);
 
     var template = extract(source, "template").content;
