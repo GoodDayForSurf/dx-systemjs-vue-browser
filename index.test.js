@@ -104,7 +104,7 @@ it("process with standalone styles", () => {
 });
 
 
-it("process with addition properties", () => {
+it("process with additional properties", () => {
   const result = `
 export default {
   filter: {
