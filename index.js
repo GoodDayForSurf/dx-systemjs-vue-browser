@@ -4,9 +4,11 @@
 
   window.translateSFC = function (source) {
     var script = extract(source, "script").content;
-    var match = script.match(/(export default {(\s|.)*)(name ?:|data ?[:(](.*){|methods ?:|props ?:|computed ?:|components ?:)/im);
+    var vueProperties = ["name", "extends", "watch", "methods", "props", "model", "computed", "components", "mixins", "filters", "data"];
+
+    var match = script.match(generateRegExp(vueProperties));
     var componentRegistration = script.substr(match.index, script.length);
-    var propertyName = match[3];
+    var propertyName = match[2];
     var propertyIndex = componentRegistration.indexOf(propertyName);
 
     var template = extract(source, "template").content;
@@ -17,6 +19,11 @@
 
     return result;
   };
+
+  function generateRegExp(props) {
+    var properties = props.join(" ?:|").replace(/data(\s?:|)?/, "data ?[:(](.*){");
+    return new RegExp("(export default {\\s*)(" + properties + ")", "im");
+  }
 
   function setTemplate(content, propertyIndex, template) {
     return content.substr(0, propertyIndex) + "template:  `" + template + "`," + content.substr(propertyIndex);

@@ -26,10 +26,9 @@ const templateWithAdditionalProperties = `
 </template>
 <script>
 export default {
-  filter: {
+  filters: {
     custom: []
   },
-  render: functiom() {},
   data() {
     return {
       text: "my-text",
@@ -107,19 +106,18 @@ it("process with standalone styles", () => {
 it("process with additional properties", () => {
   const result = `
 export default {
-  filter: {
-    custom: []
-  },
-  render: functiom() {},
   template:  \`
     <div class=\"my-class\">
     </div>
-\`,data() {
+\`,filters: {
+    custom: []
+  },
+  data() {
     return {
       text: \"my-text\",
     };
   }
 };
 `;
-  expect(translateSFC(templateWithAdditionProperties)).toBe(result);
+  expect(translateSFC(templateWithAdditionalProperties)).toBe(result);
 });
