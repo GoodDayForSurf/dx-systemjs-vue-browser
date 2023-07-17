@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/DevExpress/dx-systemjs-vue-browser#readme",
   "devDependencies": {
-    "jest": "^23.6.0"
+    "jest": "^23.6.0",
+    "typescript": "^5.1.6"
   }
 }

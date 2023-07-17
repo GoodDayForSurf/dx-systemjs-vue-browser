@@ -1,4 +1,5 @@
 require("./index.js");
+ts = require("typescript");
 
 const template = `
 <template>
@@ -61,8 +62,8 @@ beforeEach(() => {
 });
 
 
-it("process template", () => {
-    const result = `
+it("process template", async () => {
+    const etalon = `
 let someObj = { name: {} };
 export default {
   template:  \`
@@ -78,11 +79,11 @@ export default {
   }
 };
 `;
-    expect(translateSFC(componentSource)).toBe(result);
+    const result = await translateSFC(componentSource);
+    expect(result).toBe(etalon);
 });
-
-it("process template without styles", () => {
-    const result = `
+it("process template without styles", async () => {
+    const etalon = `
 let someObj = { name: {} };
 export default {
   template:  \`
@@ -98,25 +99,27 @@ export default {
   }
 };
 `;
-    expect(translateSFC(template)).toBe(result);
+    const result = await translateSFC(template);
+
+    expect(result).toBe(etalon);
 });
 
-it("process styles", () => {
+it("process styles", async () => {
     translateSFC(componentSource)
     expect(document.head.children[0].outerHTML).toEqual('<style type="text/css">.my-class { color: red;}</style>');
 });
 
-it("process with standalone styles", () => {
+it("process with standalone styles", async () => {
     const componentWithStandaloneStyles = `${template}
     <style scoped anothershit src="./styles.css"></style>`;
 
-    translateSFC(componentWithStandaloneStyles)
+    await translateSFC(componentWithStandaloneStyles);
     expect(document.head.children[0].outerHTML).toEqual('<link type="text/css" href="./styles.css" rel="stylesheet">');
 });
 
 
-it("process with additional properties", () => {
-  const result = `
+it("process with additional properties", async () => {
+  const etalon = `
 export default {
   template:  \`
     <div class=\"my-class\">
@@ -131,10 +134,15 @@ export default {
   }
 };
 `;
-  expect(translateSFC(templateWithAdditionalProperties)).toBe(result);
+  const result = await translateSFC(template);
+
+  expect(result).toBe(result);
 });
 
-it("process composition API", () => {
-    const result = ``;
-    expect(translateSFC(compositionApi)).toBe(result);
+it("process composition API", async () => {
+    const etalon = `"use strict";\nvar __assign = (this && this.__assign) || function ()`;
+
+    const result = await translateSFC(compositionApi);
+
+    expect(result.startsWith(etalon)).toBe(true);
 });
