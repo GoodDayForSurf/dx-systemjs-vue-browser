@@ -19,6 +19,18 @@ export default {
 };
 </script>`;
 
+const compositionApi = `
+<template>
+    <div class="my-class">
+        <template>
+            Content and { text }
+        </template>
+    </div>
+</template>
+<script setup>
+ const text = ref('my-text');
+</script>`;
+
 const templateWithAdditionalProperties = `
 <template>
     <div class="my-class">
@@ -120,4 +132,9 @@ export default {
 };
 `;
   expect(translateSFC(templateWithAdditionalProperties)).toBe(result);
+});
+
+it("process composition API", () => {
+    const result = ``;
+    expect(translateSFC(compositionApi)).toBe(result);
 });

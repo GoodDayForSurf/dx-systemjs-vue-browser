@@ -1,23 +1,34 @@
 "use strict";
+const { parse, compileScript, compileTemplate } = require('vue/compiler-sfc');
 
 (function () {
+  window.translateSFC = async function (source) {
+    const scriptData = extract(source, "script");
+    const template = extract(source, "template").content;
+    const script = scriptData.content;
 
-  window.translateSFC = function (source) {
-    var script = extract(source, "script").content;
-    const pattern = "export default {\\s*(name ?:|extends ?:|watch ?:|methods ?:|props ?:|model ?:|computed ?:|components ?:|mixins ?:|filters ?:|data ?[:(](.*){)";
-    var match = script.match(new RegExp(pattern, "im"));
-    var componentRegistration = script.substr(match.index, script.length);
-    var propertyName = match[1];
-    var propertyIndex = componentRegistration.indexOf(propertyName);
+    let result;
 
-    var template = extract(source, "template").content;
-    var content = setTemplate(componentRegistration, propertyIndex, template);
-    var result = script.substr(0, match.index) + content;
+    if (isCompositionApi(scriptData.attrs)) {
+      result = await getCompositionApiSFC(source, template);
+    } else {
+      const pattern = "export default {\\s*(name ?:|extends ?:|watch ?:|methods ?:|props ?:|model ?:|computed ?:|components ?:|mixins ?:|filters ?:|data ?[:(](.*){)";
+      const match = script.match(new RegExp(pattern, "im"));
+      const componentRegistration = script.substr(match.index, script.length);
+      const propertyName = match[1];
+      const propertyIndex = componentRegistration.indexOf(propertyName);
+      const content = setTemplate(componentRegistration, propertyIndex, template);
+
+      result = script.substr(0, match.index) + content;
+    }
 
     appendStyle(parseStyle(source));
-
     return result;
   };
+
+  function isCompositionApi(attrs) {
+    return attrs.trim().split(' ').includes('setup')
+  }
 
   function setTemplate(content, propertyIndex, template) {
     return content.substr(0, propertyIndex) + "template:  `" + template + "`," + content.substr(propertyIndex);
@@ -75,7 +86,6 @@
     var head = document.head || document.querySelector("head") || document.getElementsByTagName("head")[0];
 
     head.appendChild(style);
-
   }
 
   function findSrc(attrs) {
@@ -85,12 +95,45 @@
     return result ? result[1] : "";
   }
 
+  function getComponentsList(imports) {
+    const dxComponents = Object.keys(imports).filter((cmp) => cmp.startsWith('Dx'));
+    const appComponents = Object.keys(imports).filter((key) => imports[key].source.endsWith('.vue'));
+    return [...dxComponents, ...appComponents];
+  }
+
+  async function getCompositionApiSFC(source, template) {
+    const compiledScript = compileScript(parse(source).descriptor, {id: 'demo-'});
+    const compiledTemplate = compileTemplate({source: template ,id: 'demo-'});
+    const templateImports = compiledTemplate.code.replace(/export function.*/s, '');
+    const templateRenderFn = compiledTemplate.code.replace(/^.*export function\s*/s, '');
+
+    const componentsList = getComponentsList(compiledScript.imports);
+
+    const compiledScriptContent = templateImports.trim()
+        + '\n'
+        + compiledScript.content
+            .replace(
+                /defineComponent\(\{/,
+                `defineComponent({\n
+        components: {
+              ${componentsList.join(',\n').trim()}
+         },
+        ${templateRenderFn},
+    `).replace(/return __returned__/, 'return {...__returned__};');
+
+    return ts.transpileModule(
+        compiledScriptContent,
+        {
+          target: ts.ScriptTarget.ES5,
+          module: ts.ModuleKind.None
+        }).outputText;
+  }
 })();
 
 if (typeof exports !== 'undefined') {
   exports.translate = function () {
-    return function (load) {
-      return load.source = translateSFC(load.source);
+    return async function (load) {
+      return  load.source = await translateSFC(load.source);
     };
   }();
 }
