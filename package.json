@@ -1,6 +1,6 @@
 {
   "name": "dx-systemjs-vue-browser",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "SystemJS plugin to load .vue single file components",
   "main": "index.js",
   "repository": {
@@ -23,5 +23,8 @@
   "devDependencies": {
     "jest": "^23.6.0",
     "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "@vue/compiler-sfc": "^3.3.4"
   }
 }
