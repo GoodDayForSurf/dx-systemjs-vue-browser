@@ -1,5 +1,5 @@
 "use strict";
-const { parse, compileScript, compileTemplate } = require('vue/compiler-sfc');
+const { parse, compileScript, compileTemplate } = require('@vue/compiler-sfc');
 
 (function () {
   window.translateSFC = async function (source) {
