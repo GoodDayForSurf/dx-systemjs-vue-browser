@@ -24,7 +24,7 @@
     "jest": "^23.6.0",
     "typescript": "^5.1.6"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@vue/compiler-sfc": "^3.3.4"
   }
 }
