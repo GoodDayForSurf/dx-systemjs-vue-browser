@@ -1,5 +1,6 @@
 require("./index.js");
 ts = require("typescript");
+vueCompilerSFC = require("@vue/compiler-sfc");
 
 const template = `
 <template>

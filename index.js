@@ -1,5 +1,4 @@
 "use strict";
-const { parse, compileScript, compileTemplate } = require('@vue/compiler-sfc');
 
 (function () {
   window.translateSFC = async function (source) {
@@ -102,8 +101,14 @@ const { parse, compileScript, compileTemplate } = require('@vue/compiler-sfc');
   }
 
   async function getCompositionApiSFC(source, template) {
-    const compiledScript = compileScript(parse(source).descriptor, {id: 'demo-'});
-    const compiledTemplate = compileTemplate({source: template ,id: 'demo-'});
+    const {vueCompilerSFC} = window;
+
+    if(!vueCompilerSFC) {
+      throw "vueCompilerSFC is not defined! Define vueCompilerSFC as import from @vue/compiler-sfc";
+    }
+
+    const compiledScript = vueCompilerSFC.compileScript(vueCompilerSFC.parse(source).descriptor, {id: 'demo-'});
+    const compiledTemplate = vueCompilerSFC.compileTemplate({source: template ,id: 'demo-'});
     const templateImports = compiledTemplate.code.replace(/export function.*/s, '');
     const templateRenderFn = compiledTemplate.code.replace(/^.*export function\s*/s, '');
 
