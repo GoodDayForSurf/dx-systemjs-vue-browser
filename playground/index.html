@@ -1,42 +1,20 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-  <!-- Latest Ts -->
-  <!-- <script src="https://unpkg.com/typescript@5.1.6/lib/typescript.js"></script> -->
   <script src="https://unpkg.com/typescript@3.4.5/lib/typescript.js"></script>
-
-  <!-- Attempted Browser Dep (Fails)  -->
   <script type="module">
     import * as vueCompilerSFC from "https://unpkg.com/@vue/compiler-sfc@3.3.4/dist/compiler-sfc.esm-browser.js";
-
     window.vueCompilerSFC = vueCompilerSFC;
   </script>
-
-  <!-- Stable Plugin (Works) -->
-  <!-- <script src="https://unpkg.com/dx-systemjs-vue-browser@1.0.15/index.js"></script> -->
-  <!-- Latest Plugin (Does Not Work) -->
-  <!-- <script src="https://unpkg.com/dx-systemjs-vue-browser@latest/index.js"></script> -->
-  <!-- Plugin (In Testing) -->
-  <script type="module" src="vue-loader.js"></script>
-
-  <!-- Input Vue Data -->
+  <!-- Ensure Order (type="module") -->
+  <script type="module" src="../index.js"></script>
   <script src="data.js"></script>
   <script type="module">
-/*  console.log("ts: " + ts);
-    console.log("ts.transpileModule: " + ts.transpileModule);
-    console.log("translateSFC:" + translateSFC);
-    console.log("compositionApiVar:" + compositionApiVar);*/
-    var translatedViaSFC = translateSFC(compositionApiVar, false);
-    console.log("translatedViaSFC", translatedViaSFC);
-    // Should Be Smth Like In Test:
-    // https://github.com/DevExpress/dx-systemjs-vue-browser/blob/master/index.test.js#L143
-    var transpiledViaTs = ts.transpileModule(translatedViaSFC, { target: ts.ScriptTarget.ES5, module: ts.ModuleKind.None }).outputText;
-    console.log(transpiledViaTs);
+    console.log(translateSFC(compositionApiVar, true));
+    console.log(translateSFC(compositionApiVar, false));
+    console.log(ts.transpileModule(translateSFC(compositionApiVar, false), { target: ts.ScriptTarget.ES5, module: ts.ModuleKind.None }).outputText); //WG executeVueAndReact -> compilerOptions
   </script>
 </head>
-
 <body>
 </body>
-
 </html>

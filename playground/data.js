@@ -1,4 +1,4 @@
-// https://github.com/DevExpress/dx-systemjs-vue-browser/blob/master/index.test.js#L23
+// "compositionApi" from ../index.test.js
 var compositionApiVar = `
 <template>
     <div class="my-class">
@@ -7,7 +7,6 @@ var compositionApiVar = `
         </template>
     </div>
 </template>
-<script setup lang="ts">
-import ref from "vue";
- const text = 'my-text';
+<script setup>
+ const text = ref('my-text');
 </script>`;

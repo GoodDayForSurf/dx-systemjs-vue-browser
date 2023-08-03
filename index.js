@@ -97,7 +97,7 @@
 
   function getComponentsList(imports) {
     if(!imports || !imports.length) {
-      return []
+      return [];
     }
 
     const dxComponents = Object.keys(imports).filter((cmp) => cmp.startsWith('Dx'));
@@ -106,10 +106,14 @@
   }
 
   function getCompositionApiSFC(source, template, convertTS = true) {
-    const {vueCompilerSFC} = window;
+    const { vueCompilerSFC } = window;
+    const { ts } = window;
 
     if(!vueCompilerSFC) {
-      throw "Composition API is detected but window.vueCompilerSFC is not defined!\n Define window.vueCompilerSFC as result of import from @vue/compiler-sfc";
+      throw "Composition API is detected, but window.vueCompilerSFC is not defined!\nDefine window.vueCompilerSFC as result of import from @vue/compiler-sfc";
+    }
+    if(convertTS && !ts) {
+      throw "TypeScript is required, but window.ts is not defined!\nInclude typescript.js to page";
     }
 
     const compiledScript = vueCompilerSFC.compileScript(vueCompilerSFC.parse(source).descriptor, {id: 'demo-'});
@@ -145,7 +149,7 @@
 if (typeof exports !== 'undefined') {
   exports.translate = function () {
     return function (load) {
-      return  load.source = translateSFC(load.source);
+      return load.source = translateSFC(load.source);
     };
   }();
 }

@@ -63,7 +63,7 @@ beforeEach(() => {
 });
 
 
-it("process template", async () => {
+it("process template", () => {
     const etalon = `
 let someObj = { name: {} };
 export default {
@@ -80,10 +80,10 @@ export default {
   }
 };
 `;
-    const result = await translateSFC(componentSource);
+    const result = translateSFC(componentSource);
     expect(result).toBe(etalon);
 });
-it("process template without styles", async () => {
+it("process template without styles", () => {
     const etalon = `
 let someObj = { name: {} };
 export default {
@@ -100,21 +100,21 @@ export default {
   }
 };
 `;
-    const result = await translateSFC(template);
+    const result = translateSFC(template);
 
     expect(result).toBe(etalon);
 });
 
-it("process styles", async () => {
+it("process styles", () => {
     translateSFC(componentSource)
     expect(document.head.children[0].outerHTML).toEqual('<style type="text/css">.my-class { color: red;}</style>');
 });
 
-it("process with standalone styles", async () => {
+it("process with standalone styles", () => {
     const componentWithStandaloneStyles = `${template}
     <style scoped anothershit src="./styles.css"></style>`;
 
-    await translateSFC(componentWithStandaloneStyles);
+    translateSFC(componentWithStandaloneStyles);
     expect(document.head.children[0].outerHTML).toEqual('<link type="text/css" href="./styles.css" rel="stylesheet">');
 });
 
@@ -137,7 +137,7 @@ export default {
     expect(translateSFC(templateWithAdditionalProperties)).toBe(etalon);
 });
 
-it("process composition API", async () => {
+it("process composition API", () => {
     const etalon = `"use strict";
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
@@ -176,7 +176,7 @@ exports.default = {
     expect(etalon).toBe(result);
 });
 
-it("process composition API without TS converting", async () => {
+it("process composition API without TS converting", () => {
     const etalon = `import { createTextVNode as _createTextVNode, createElementVNode as _createElementVNode, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue"
 
 const _hoisted_1 = { class: "my-class" }
