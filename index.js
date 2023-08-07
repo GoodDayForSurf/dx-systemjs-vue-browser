@@ -1,7 +1,7 @@
 "use strict";
 
 (function () {
-  window.translateSFC = function (source, convertTS = true) {
+  window.translateSFC = function (source, convertTS = true, tsCompilerOptions ) {
     const scriptData = extract(source, "script");
     const template = extract(source, "template").content;
     const script = scriptData.content;
@@ -9,7 +9,7 @@
     let result;
 
     if (isCompositionApi(scriptData.attrs)) {
-      result = getCompositionApiSFC(source, template, convertTS);
+      result = getCompositionApiSFC(source, template, convertTS, tsCompilerOptions);
     } else {
 
       const pattern = "export default {\\s*(name ?:|extends ?:|watch ?:|methods ?:|props ?:|model ?:|computed ?:|components ?:|mixins ?:|filters ?:|(data|render) ?[:(](.*){)";
@@ -105,7 +105,7 @@
     return [...dxComponents, ...appComponents];
   }
 
-  function getCompositionApiSFC(source, template, convertTS = true) {
+  function getCompositionApiSFC(source, template, convertTS = true, tsCompilerOptions) {
     const { vueCompilerSFC } = window;
     const { ts } = window;
 
@@ -139,7 +139,7 @@
         ? compiledScriptContent
         : ts.transpileModule(
             compiledScriptContent,
-            {
+            tsCompilerOptions || {
               target: ts.ScriptTarget.ES5,
               module: ts.ModuleKind.None
             }).outputText;
