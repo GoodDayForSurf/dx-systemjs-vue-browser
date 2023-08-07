@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://unpkg.com/typescript@3.4.5/lib/typescript.js"></script>
+  <script type="module">
+    import * as vueCompilerSFC from "https://unpkg.com/@vue/compiler-sfc@3.3.4/dist/compiler-sfc.esm-browser.js";
+    window.vueCompilerSFC = vueCompilerSFC;
+  </script>
+  <!-- Ensure Order (type="module") -->
+  <script type="module" src="../index.js"></script>
+  <script src="data.js"></script>
+  <script type="module">
+    console.log(translateSFC(compositionApiVar, true));
+    console.log(translateSFC(compositionApiVar, false));
+    console.log(ts.transpileModule(translateSFC(compositionApiVar, false), { target: ts.ScriptTarget.ES5, module: ts.ModuleKind.None }).outputText); //WG executeVueAndReact -> compilerOptions
+  </script>
+</head>
+<body>
+</body>
+</html>

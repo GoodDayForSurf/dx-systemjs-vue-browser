@@ -1,8 +1,7 @@
 "use strict";
-const { parse, compileScript, compileTemplate } = require('@vue/compiler-sfc');
 
 (function () {
-  window.translateSFC = async function (source) {
+  window.translateSFC = function (source, convertTS = true, tsCompilerOptions ) {
     const scriptData = extract(source, "script");
     const template = extract(source, "template").content;
     const script = scriptData.content;
@@ -10,9 +9,10 @@ const { parse, compileScript, compileTemplate } = require('@vue/compiler-sfc');
     let result;
 
     if (isCompositionApi(scriptData.attrs)) {
-      result = await getCompositionApiSFC(source, template);
+      result = getCompositionApiSFC(source, template, convertTS, tsCompilerOptions);
     } else {
-      const pattern = "export default {\\s*(name ?:|extends ?:|watch ?:|methods ?:|props ?:|model ?:|computed ?:|components ?:|mixins ?:|filters ?:|data ?[:(](.*){)";
+
+      const pattern = "export default {\\s*(name ?:|extends ?:|watch ?:|methods ?:|props ?:|model ?:|computed ?:|components ?:|mixins ?:|filters ?:|(data|render) ?[:(](.*){)";
       const match = script.match(new RegExp(pattern, "im"));
       const componentRegistration = script.substr(match.index, script.length);
       const propertyName = match[1];
@@ -96,14 +96,28 @@ const { parse, compileScript, compileTemplate } = require('@vue/compiler-sfc');
   }
 
   function getComponentsList(imports) {
+    if(!imports) {
+      return [];
+    }
+
     const dxComponents = Object.keys(imports).filter((cmp) => cmp.startsWith('Dx'));
     const appComponents = Object.keys(imports).filter((key) => imports[key].source.endsWith('.vue'));
     return [...dxComponents, ...appComponents];
   }
 
-  async function getCompositionApiSFC(source, template) {
-    const compiledScript = compileScript(parse(source).descriptor, {id: 'demo-'});
-    const compiledTemplate = compileTemplate({source: template ,id: 'demo-'});
+  function getCompositionApiSFC(source, template, convertTS = true, tsCompilerOptions) {
+    const { vueCompilerSFC } = window;
+    const { ts } = window;
+
+    if(!vueCompilerSFC) {
+      throw "Composition API is detected, but window.vueCompilerSFC is not defined!\nDefine window.vueCompilerSFC as result of import from @vue/compiler-sfc";
+    }
+    if(convertTS && !ts) {
+      throw "TypeScript is required, but window.ts is not defined!\nInclude typescript.js to page";
+    }
+
+    const compiledScript = vueCompilerSFC.compileScript(vueCompilerSFC.parse(source).descriptor, {id: 'demo-'});
+    const compiledTemplate = vueCompilerSFC.compileTemplate({source: template ,id: 'demo-'});
     const templateImports = compiledTemplate.code.replace(/export function.*/s, '');
     const templateRenderFn = compiledTemplate.code.replace(/^.*export function\s*/s, '');
 
@@ -121,19 +135,21 @@ const { parse, compileScript, compileTemplate } = require('@vue/compiler-sfc');
         ${templateRenderFn},
     `).replace(/return __returned__/, 'return {...__returned__};');
 
-    return ts.transpileModule(
-        compiledScriptContent,
-        {
-          target: ts.ScriptTarget.ES5,
-          module: ts.ModuleKind.None
-        }).outputText;
+    return !convertTS
+        ? compiledScriptContent
+        : ts.transpileModule(
+            compiledScriptContent,
+            tsCompilerOptions || {
+              target: ts.ScriptTarget.ES5,
+              module: ts.ModuleKind.None
+            }).outputText;
   }
 })();
 
 if (typeof exports !== 'undefined') {
   exports.translate = function () {
-    return async function (load) {
-      return  load.source = await translateSFC(load.source);
+    return function (load) {
+      return load.source = translateSFC(load.source);
     };
   }();
 }
