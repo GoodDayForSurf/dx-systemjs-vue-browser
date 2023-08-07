@@ -96,7 +96,7 @@
   }
 
   function getComponentsList(imports) {
-    if(!imports || !imports.length) {
+    if(!imports) {
       return [];
     }
 
