@@ -201,6 +201,5 @@ return {...__returned__};
 
     const result = translateSFC(compositionApi, false);
 
-    console.log('-----result----->', result);
     expect(etalon).toBe(result);
 })
