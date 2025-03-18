@@ -51,6 +51,18 @@ const compositionApi = `
  const text = ref('my-text');
 </script>`;
 
+const compositionApiWithImports = `
+<template>
+    <div class="my-class">
+        <DxSomeComponent/>
+    </div>
+</template>
+<script setup lang="ts">
+ import { DxSomeComponent, type DxSomeType } from 'devextreme-vue/component';
+ import type { DxSomeType2, DxSomeType3 } from 'devextreme-vue/component';
+
+</script>`;
+
 const componentSource = `${template}
 <style>
 .my-class {
@@ -203,3 +215,10 @@ return {...__returned__};
 
     expect(etalon).toBe(result);
 })
+
+it("type imports are not inserted as components in TS composition API", async () => {
+    const result = await translateSFC(compositionApiWithImports);
+
+    expect(result.includes('DxSomeType')).toBeFalsy();
+    expect(result.includes('DxSomeComponent')).toBeTruthy();
+});
