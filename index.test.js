@@ -217,8 +217,8 @@ return {...__returned__};
     expect(etalon).toBe(result);
 })
 
-it("type imports are not inserted as components in TS composition API", async () => {
-    const result = await translateSFC(compositionApiWithImports);
+it("type imports are not inserted as components in TS composition API", () => {
+    const result = translateSFC(compositionApiWithImports);
 
     expect(result.includes('DxSomeType')).toBeFalsy();
     expect(result.includes('DxSomeComponent')).toBeTruthy();
